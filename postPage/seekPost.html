@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구직글 작성</title>
+    <style>
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .buttonC{
+            display: flex;
+            justify-content: center;
+            margin: 15px;
+            margin-left: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        input[type="checkbox"] {
+            display: none;
+        }
+        input[type="text"], select, button {
+            width: calc(100% - 24px);
+            padding: 13px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .regionBox select, .jobTypeBox select{
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            box-sizing: border-box;
+        }
+        .checkPeriod ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0;
+            list-style: none;
+        }
+        .checkPeriod li {
+            list-style: none;
+        }
+        .checkPeriod label {
+            display: flex;
+            padding: 13px 18px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            border: 1px solid #DBDBDB;
+            background: #FFF;
+            cursor: pointer;
+        }
+        .checkPeriod input[type="checkbox"]:checked+label {
+            border: 1px solid #FF9254;
+            background: #FFF1E9;
+        }
+
+        .schedule {
+            margin-top: 20px;
+        }
+
+        .schedule table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule th, .schedule td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .schedule td {
+            cursor: pointer;
+        }
+
+        .schedule td.selected {
+            background-color: #FF9254;
+            color: #fff;
+        }
+
+        
+        button {
+            background-color: #FF9254;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 20px;
+        }
+        button:hover {
+            background-color: #FF7634;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>구직글 작성</h1>
+        <form action="/submitSeekPost" method="post">
+            <div class="container">
+
+            <label for="seekPostTitle">제목</label>
+            <input type="text" id="seekPostTitle" name="seekPostTitle" placeholder="제목을 입력하세요" required>
+
+            <label>희망 근무 기간</label>
+            <div class="checkPeriod">
+                <ul>
+                    <li>
+                        <input type="checkbox" value="1mon" name="workPeriod" id="1mon" onclick="selectOnlyOne(this)">
+                        <label for="1mon">1개월</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" value="3mon" name="workPeriod" id="3mon" onclick="selectOnlyOne(this)">
+                        <label for="3mon">3개월</label>
+                    </li>
+                        <input type="checkbox" value="6mon" name="workPeriod" id="6mon" onclick="selectOnlyOne(this)">
+                        <label for="6mon">6개월</label>
+                    <li>
+                        <input type="checkbox" value="1year" name="workPeriod" id="1year" onclick="selectOnlyOne(this)">
+                        <label for="1year">1년이상</label>
+                    </li>
+                </ul>
+            </div>
+
+            <label for="region">희망 지역</label>
+            <div class="regionBox">
+                <select>
+                    <option value="1">정왕1동</option>
+                    <option value="2">정왕2동</option>
+                    <option value="3">정왕3동</option>
+                    <option value="4">정왕4동</option>
+                    <option value="5">정왕동</option>
+                    <option value="6">정왕본동</option>
+                </select>
+            </div>
+
+            <label for="jobType">희망 업종</label>
+            <div class="jobTypeBox">
+                <select>
+                    <option value="1">카페</option>
+                    <option value="2">음식점</option>
+                    <option value="3">편의점</option>
+                    <option value="4">물류</option>
+                    <option value="5">학원 강사</option>
+                </select>
+            </div>
+            
+            <div class="schedule">
+                <h3>시간 선택</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>시간</th>
+                            <th>월</th>
+                            <th>화</th>
+                            <th>수</th>
+                            <th>목</th>
+                            <th>금</th>
+                            <th>토</th>
+                            <th>일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody">
+                        <!-- 시간표 내용 동적으로 추가 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="buttonC">
+                <button type="submit">작성 완료</button>
+            </div>
+            
+        </div>
+        </form>
+    
+    <script>
+        // checkbox 하나만 선택
+        function selectOnlyOne(checkbox) {
+            const checkboxes = document.querySelectorAll('input[name="workPeriod"]');
+            checkboxes.forEach((item) => {
+                if (item !== checkbox) {
+                    item.checked = false;
+                }
+            });
+        }
+
+        // 시간표 초기화
+        const scheduleBody = document.getElementById('scheduleBody');
+        const scheduleData = {};
+        const hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+        const days = ['월', '화', '수', '목', '금', '토', '일'];
+
+        // 시간표 테이블 생성
+        hours.forEach(hour => {
+            const row = document.createElement('tr');
+            const hourCell = document.createElement('td');
+            hourCell.textContent = hour;
+            row.appendChild(hourCell);
+
+            days.forEach(day => {
+                const cell = document.createElement('td');
+                cell.dataset.day = day;
+                cell.dataset.hour = hour;
+                cell.addEventListener('click', () => toggleSchedule(cell));
+                row.appendChild(cell);
+            });
+
+            scheduleBody.appendChild(row);
+        });
+
+        // 스케줄 선택 토글
+        function toggleSchedule(cell) {
+            const day = cell.dataset.day;
+            const hour = cell.dataset.hour;
+            if (!scheduleData[day]) scheduleData[day] = new Set();
+
+            if (cell.classList.contains('selected')) {
+                cell.classList.remove('selected');
+                scheduleData[day].delete(hour);
+            } else {
+                cell.classList.add('selected');
+                scheduleData[day].add(hour);
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            e.target.submit();
+            alert('제출 완료되었습니다!')
+        });
+    </script>
+</body>
+
+</html>

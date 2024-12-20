@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .summary h2 {
+            margin: 20px 0 10px;
+            font-size: 1.5em;
+        }
+        .summary p {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>관리자 페이지</h1>
+</header>
+
+<nav>
+    <a href="recruitment.html">채용공고 관리</a>
+    <a href="jobSeekers.html">구직글 관리</a>
+    <a href="members.html">회원 정보 관리</a>
+</nav>
+
+<div class="container">
+    <div class="summary" id="summary">
+        <h2>현재 총 게시글 및 회원 수</h2>
+        <p>채용공고: <span id="recruitment-count"></span> 개</p>
+        <p>구직글: <span id="jobSeekers-count"></span> 개</p>
+        <p>회원: <span id="members-count"></span> 명</p>
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://example.com/api"; // 실제 API URL로 변경하기
+
+    // 요약 데이터 가져오기
+    async function fetchSummary() {
+        try {
+            const response = await fetch(`${API_URL}/summary`);
+            const data = await response.json();
+
+            document.getElementById("recruitment-count").textContent = data.recruitments;
+            document.getElementById("jobSeekers-count").textContent = data.jobSeekers;
+            document.getElementById("members-count").textContent = data.members;
+        } catch (error) {
+            console.error("요약 데이터를 가져오는 중 오류 발생:", error);
+        }
+    }
+
+    // 페이지 로드 시 요약 데이터 로드
+    document.addEventListener("DOMContentLoaded", fetchSummary);
+</script>
+
+</body>
+</html>

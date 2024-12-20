@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구직글 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><a href="admin.html" style="text-decoration: none; color: inherit;">관리자 페이지</a></h1>
+    </header>
+    
+    <nav>
+        <a href="recruitment.html">채용공고 관리</a>
+        <a href="jobSeekers.html">구직글 관리</a>
+        <a href="members.html">회원 정보 관리</a>
+    </nav>
+
+<div class="container">
+    <h3>구직글 관리</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>게시글 번호</th>
+                <th>구직글 제목</th>
+                <th>닉네임</th>
+                <th>등록일자</th>
+            </tr>
+        </thead>
+        <tbody id="jobSeekers-data">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    //const API_URL = "https://example.com/api";
+
+    // 구직글 데이터 가져오기
+    async function fetchjobSeekers() {
+        const exampleData = [
+        { 
+            seekPostNo:1,
+            seekPostTitle:"구직글 1",
+            nickName: "user1", 
+            name: "홍길동", 
+            tel: "010-1234-5678", 
+            postDate:"2024-01-01",
+            signDate: "2024-01-01" 
+        },
+        { 
+            employPostNo: 1,
+            employPostTitle: "채용공고 글1",
+            comName: "companyA", 
+            name: "ABC 회사", 
+            tel: "02-9876-5432", 
+            signDate: "2024-01-01",
+            postDate: "2024-02-15" 
+        },
+        { 
+            seekPostNo:2,
+            seekPostTitle:"구직글 2",
+            nickName: "user2", 
+            name: "김철수", 
+            tel: "010-5678-1234",
+            postDate:"2024-03-01", 
+            signDate: "2024-03-10" 
+        }
+    ];
+        renderjobSeekers(exampleData);
+        /*
+        try {
+            const response = await fetch(`${API_URL}/jobSeekers`);
+            const data = await response.json();
+            renderjobSeekers(data);
+        } catch (error) {
+            console.error("채용공고 데이터를 가져오는 중 오류 발생:", error);
+        }
+    }*/
+    }
+
+    // 테이블 렌더링
+    function renderjobSeekers(data) {
+        const tableBody = document.getElementById("jobSeekers-data");
+        tableBody.innerHTML = ""; // 기존 데이터 초기화
+
+        data.forEach(item => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${item.seekPostNo}</td>
+                <td>${item.seekPostTitle}</td>
+                <td>${item.nickName}</td>
+                <td>${item.postDate}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // 페이지 로드 시 데이터 로드
+    document.addEventListener("DOMContentLoaded", fetchjobSeekers);
+</script>
+
+</body>
+</html>

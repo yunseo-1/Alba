@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원정보 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        .header-container{
+            display: flex;
+            justify-content: space-between;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button{
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><a href="admin.html" style="color: inherit; text-decoration: none;">관리자 페이지</a></h1>
+    </header>
+    
+    <nav>
+        <a href="recruitment.html">채용공고 관리</a>
+        <a href="jobSeekers.html">구직글 관리</a>
+        <a href="members.html">회원 정보 관리</a>
+    </nav>
+
+<div class="container">
+    <div class ="header-container">
+        <h3>회원 정보 관리</h3>
+        <button id="delete-selected">삭제</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>관리</th>
+                <th>닉네임 / 회사명</th>
+                <th>전화번호</th>
+                <th>가입일</th>
+            </tr>
+        </thead>
+        <tbody id="members-data">
+        <!--데이터 삽입-->
+        </tbody>
+    </table>
+    
+</div>
+
+<script>
+    //const API_URL = "https://example.com/api";
+
+    // 회원 데이터 가져오기
+    async function fetchMembers() {
+        //임시 데이터
+        const exampleData = [
+        { 
+            seekPostNo:1,
+            seekPostTitle:"구직글 1",
+            nickName: "user1", 
+            name: "홍길동", 
+            tel: "010-1234-5678", 
+            postDate:"2024-01-01",
+            signDate: "2024-01-01" 
+        },
+        { 
+            employPostNo: 1,
+            employPostTitle: "채용공고 글1",
+            comName: "companyA", 
+            name: "ABC 회사", 
+            tel: "02-9876-5432", 
+            signDate: "2024-01-01",
+            postDate: "2024-02-15" 
+        },
+        { 
+            seekPostNo:2,
+            seekPostTitle:"구직글 2",
+            nickName: "user2", 
+            name: "김철수", 
+            tel: "010-5678-1234",
+            postDate:"2024-03-01", 
+            signDate: "2024-03-10" 
+        }
+    ];
+        renderMembers(exampleData);
+    /*try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            rendermembers(data);
+        } catch (error) {
+            console.error("회원원 데이터를 가져오는 중 오류 발생:", error);
+    }*/
+    }
+
+    // 테이블 렌더링
+    function renderMembers(data) {
+        const tableBody = document.getElementById("members-data");
+        tableBody.innerHTML = ""; // 기존 데이터 초기화
+
+        data.forEach(item => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td><input type="checkbox" class="member-checkbox" data-id="${item.nickName || item.comName}" /></td>
+                <td>${item.name}</td>
+                <td>${item.tel}</td>
+                <td>${item.signDate}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // 선택된 회원 삭제
+    async function deleteSelectedMembers() {
+        // 체크된 박스들 가져오기
+        const selectedCheckboxes = document.querySelectorAll('.member-checkbox:checked');
+        const idsToDelete = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
+
+        if (idsToDelete.length === 0) {
+            alert("삭제할 항목을 선택하세요.");
+            return;
+        }
+
+        if (confirm("선택한 회원들을 정말 삭제하시겠습니까?")) {
+            try {
+                // 여러 삭제 요청 처리
+                await Promise.all(idsToDelete.map(id =>
+                    fetch(`${API_URL}/members/${id}`, { method: "DELETE" })
+                ));
+
+                alert("선택한 회원들이 삭제되었습니다.");
+                fetchMembers(); // 테이블 새로고침
+            } catch (error) {
+                console.error("회원 삭제 중 오류 발생:", error);
+            }
+        }
+    }
+
+    // 페이지 로드 시 데이터 로드
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchMembers();
+
+        // 삭제 버튼 클릭 이벤트 등록
+        document.getElementById("delete-selected").addEventListener("click", deleteSelectedMembers);
+    });
+</script>
+
+</body>
+</html>
